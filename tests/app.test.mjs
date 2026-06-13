@@ -4,11 +4,11 @@ import { readFile } from 'node:fs/promises';
 import {
   formatPrice,
   parseRoute,
-  filterCars,
   sortCars,
   getCarById,
-  getFeaturedCars,
-  getUniqueValues
+  getCarsForList,
+  getGalleryImages,
+  clampZoomScale
 } from '../app.js';
 
 const cars = [
@@ -40,9 +40,9 @@ test('formatPrice renders RMB in 万元 units', () => {
   assert.equal(formatPrice(128000), '12.80万');
 });
 
-test('parseRoute returns default home route', () => {
+test('parseRoute returns vehicle list as the default route', () => {
   assert.deepEqual(parseRoute('https://example.com/index.html'), {
-    page: 'home',
+    page: 'cars',
     id: ''
   });
 });
@@ -52,19 +52,6 @@ test('parseRoute reads page and id query params', () => {
     page: 'car',
     id: 'a'
   });
-});
-
-test('filterCars filters by brand, type, price, mileage, fuel, and transmission', () => {
-  const result = filterCars(cars, {
-    brand: '比亚迪',
-    type: 'SUV',
-    price: '5-10',
-    mileage: '0-3',
-    fuel: '纯电',
-    transmission: '自动'
-  });
-
-  assert.deepEqual(result.map((car) => car.id), ['b']);
 });
 
 test('sortCars sorts by newest year without mutating input', () => {
@@ -88,15 +75,28 @@ test('cars.json contains usable sample inventory', async () => {
   }
 });
 
-test('getUniqueValues returns sorted unique values', () => {
-  assert.deepEqual(getUniqueValues(cars, 'brand'), ['丰田', '比亚迪']);
-});
-
 test('getCarById returns matching car or null', () => {
   assert.equal(getCarById(cars, 'a').id, 'a');
   assert.equal(getCarById(cars, 'missing'), null);
 });
 
-test('getFeaturedCars returns featured cars with limit', () => {
-  assert.deepEqual(getFeaturedCars(cars, 1).map((car) => car.id), ['a']);
+test('getCarsForList ignores old search query params and returns all cars by newest order', () => {
+  const result = getCarsForList(cars, 'https://example.com/index.html?page=cars&brand=比亚迪&price=5-10');
+
+  assert.deepEqual(result.map((car) => car.id), ['a', 'b']);
+});
+
+test('getGalleryImages merges cover and detail images without duplicates', () => {
+  const result = getGalleryImages({
+    coverImage: 'cover.jpg',
+    images: ['cover.jpg', 'side.jpg', 'interior.jpg', 'side.jpg']
+  });
+
+  assert.deepEqual(result, ['cover.jpg', 'side.jpg', 'interior.jpg']);
+});
+
+test('clampZoomScale keeps zoom scale within bounds', () => {
+  assert.equal(clampZoomScale(0.4), 0.8);
+  assert.equal(clampZoomScale(1.4), 1.4);
+  assert.equal(clampZoomScale(3.1), 2.5);
 });

@@ -68,18 +68,19 @@ assets/cars/toyota-camry-2021-001/detail-1.jpg
 
 ```js
 const CONTACT = {
-  phone: '138-0000-8888',
-  wechat: 'RanShengCar',
-  address: '江苏省苏州市相城区二手车市场示例店铺 A18',
-  hours: '周一至周日 09:00-19:00',
-  mapUrl: 'https://map.baidu.com/'
+  phone: '18753716666',
+  wechat: '18753716666',
+  address: '济宁市高新区南营村327国道申科集团-往西20米路南-冉升车行',
+  hours: '周一至周日 09:00-21:00',
+  baiduMapUrl: 'https://j.map.baidu.com/a7/eCqM',
+  amapUrl: 'https://surl.amap.com/6TO06zsU95E'
 };
 ```
 
 微信二维码图片在：
 
 ```text
-assets/contact/wechat-qr.svg
+assets/contact/wechat-qr.jpg
 ```
 
 后续可以替换成真实二维码图片，并在页面里保持同一路径，或者修改 `app.js` 中的图片路径。
@@ -112,8 +113,8 @@ node --test tests/app.test.mjs
 
 手动检查：
 
-- 首页能看到推荐车辆。
-- 车辆列表筛选和排序正常。
+- 根路径打开后显示车辆列表。
+- 车辆列表展示正常。
 - 点击车辆能进入详情页。
 - 详情页缩略图能切换大图。
 - 公司介绍和联系方式页面能打开。
